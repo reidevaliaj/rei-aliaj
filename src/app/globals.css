@@ -334,12 +334,12 @@ a {
   gap: 0.7rem;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 1.25rem;
-  background: rgba(255, 255, 255, 0.035);
+  background: rgba(10, 11, 15, 0.8);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   padding: 0.9rem;
   box-shadow:
-    0 16px 40px rgba(0, 0, 0, 0.18),
+    0 20px 48px rgba(0, 0, 0, 0.28),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
@@ -353,8 +353,8 @@ a {
   font-size: 0.72rem;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.72);
-  background: rgba(255, 255, 255, 0.018);
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 @media (max-width: 1023px) {
