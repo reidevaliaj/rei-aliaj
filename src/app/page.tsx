@@ -106,12 +106,12 @@ export default function Home() {
           <div className="ambient-orb ambient-orb-b left-[6%] top-[246rem] h-[10rem] w-[10rem] md:left-[12%] md:top-[252rem] md:h-[15rem] md:w-[15rem]" />
         </div>
 
-      <header className="site-header px-6 pb-4 pt-6 md:px-10 md:pt-8">
+      <header className="site-header px-4 py-3 md:px-10 md:py-5">
         <div className="mx-auto max-w-7xl">
-          <div className="flex items-center justify-between gap-6">
+          <div className="flex items-center justify-between gap-4">
             <Link
               href="/"
-              className="font-display text-sm font-semibold uppercase tracking-[0.32em] text-white/88"
+              className="shrink-0 font-display text-[0.82rem] font-semibold uppercase tracking-[0.28em] text-white/88 md:text-sm md:tracking-[0.32em]"
             >
               Rei Aliaj
             </Link>
@@ -137,10 +137,22 @@ export default function Home() {
               </a>
             </nav>
 
-    
+            <a
+              href="#contact"
+              className="button-secondary hidden whitespace-nowrap lg:inline-flex"
+            >
+              Get in Touch
+            </a>
+
+            <a
+              href="#contact"
+              className="button-secondary shrink-0 px-4 py-2 text-[0.68rem] tracking-[0.18em] lg:hidden"
+            >
+              Contact
+            </a>
           </div>
 
-          <div className="mt-5 flex flex-wrap gap-3 lg:hidden">
+          <div className="mobile-nav-strip mt-3 flex gap-2 overflow-x-auto pb-1 lg:hidden">
             {[
               ["Services", "#services"],
               ["AI Assistant", "#ai-assistant"],
@@ -151,7 +163,7 @@ export default function Home() {
               <a
                 key={label}
                 href={href}
-                className="ghost-pill rounded-full px-4 py-2 text-[0.68rem] uppercase tracking-[0.26em] text-white/62 transition-colors hover:text-white"
+                className="ghost-pill shrink-0 rounded-full px-3 py-2 text-[0.62rem] uppercase tracking-[0.22em] text-white/62 transition-colors hover:text-white"
               >
                 {label}
               </a>
