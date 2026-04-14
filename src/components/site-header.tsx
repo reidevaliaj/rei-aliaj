@@ -48,13 +48,6 @@ export function SiteHeader() {
             </a>
           </nav>
 
-          <a
-            href="#contact"
-            className="button-secondary hidden whitespace-nowrap lg:inline-flex"
-          >
-            Get in Touch
-          </a>
-
           <button
             type="button"
             aria-expanded={isOpen}
@@ -78,10 +71,6 @@ export function SiteHeader() {
                 <span>{label}</span>
               </a>
             ))}
-
-            <a href="#contact" onClick={closeMenu} className="button-primary w-full">
-              Get in Touch
-            </a>
           </div>
         </div>
       </div>

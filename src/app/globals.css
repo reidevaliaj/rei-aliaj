@@ -299,7 +299,6 @@ a {
 }
 
 .mobile-menu-button {
-  display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 2.85rem;
@@ -313,8 +312,6 @@ a {
 }
 
 .mobile-menu-panel {
-  display: grid;
-  grid-template-rows: 0fr;
   opacity: 0;
   overflow: hidden;
   transition:
@@ -358,6 +355,17 @@ a {
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.72);
   background: rgba(255, 255, 255, 0.018);
+}
+
+@media (max-width: 1023px) {
+  .mobile-menu-button {
+    display: inline-flex;
+  }
+
+  .mobile-menu-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+  }
 }
 
 .ghost-pill {
