@@ -12,6 +12,7 @@ import {
   SparkIcon,
   WhatsAppIcon,
 } from "@/components/icons";
+import { SiteHeader } from "@/components/site-header";
 import {
   caseStudies,
   contactDetails,
@@ -106,71 +107,7 @@ export default function Home() {
           <div className="ambient-orb ambient-orb-b left-[6%] top-[246rem] h-[10rem] w-[10rem] md:left-[12%] md:top-[252rem] md:h-[15rem] md:w-[15rem]" />
         </div>
 
-      <header className="site-header px-4 py-3 md:px-10 md:py-5">
-        <div className="mx-auto max-w-7xl">
-          <div className="flex items-center justify-between gap-4">
-            <Link
-              href="/"
-              className="shrink-0 font-display text-[0.82rem] font-semibold uppercase tracking-[0.28em] text-white/88 md:text-sm md:tracking-[0.32em]"
-            >
-              Rei Aliaj
-            </Link>
-
-            <nav className="hidden items-center gap-7 text-xs uppercase tracking-[0.3em] text-white/42 lg:flex">
-              <a href="#services" className="transition-colors hover:text-white/84">
-                Services
-              </a>
-              <a
-                href="#ai-assistant"
-                className="transition-colors hover:text-white/84"
-              >
-                AI Assistant
-              </a>
-              <a href="#work" className="transition-colors hover:text-white/84">
-                Case Studies
-              </a>
-              <a href="#about" className="transition-colors hover:text-white/84">
-                About Me
-              </a>
-              <a href="#contact" className="transition-colors hover:text-white/84">
-                Contact
-              </a>
-            </nav>
-
-            <a
-              href="#contact"
-              className="button-secondary hidden whitespace-nowrap lg:inline-flex"
-            >
-              Get in Touch
-            </a>
-
-            <a
-              href="#contact"
-              className="button-secondary shrink-0 px-4 py-2 text-[0.68rem] tracking-[0.18em] lg:hidden"
-            >
-              Contact
-            </a>
-          </div>
-
-          <div className="mobile-nav-strip mt-3 flex gap-2 overflow-x-auto pb-1 lg:hidden">
-            {[
-              ["Services", "#services"],
-              ["AI Assistant", "#ai-assistant"],
-              ["Work", "#work"],
-              ["About", "#about"],
-              ["Contact", "#contact"],
-            ].map(([label, href]) => (
-              <a
-                key={label}
-                href={href}
-                className="ghost-pill shrink-0 rounded-full px-3 py-2 text-[0.62rem] uppercase tracking-[0.22em] text-white/62 transition-colors hover:text-white"
-              >
-                {label}
-              </a>
-            ))}
-          </div>
-        </div>
-      </header>
+      <SiteHeader />
 
       <section
         id="top"
@@ -188,16 +125,24 @@ export default function Home() {
               I’m a Shopify developer and designer with several years of experience helping stores grow and optimize their performance.
             </p>
 
-            <div className="fade-in-4 mt-10 flex flex-col gap-4 sm:flex-row">
-              <a href="#work" className="button-primary">
-                View My Work
-              </a>
-              <a href="#contact" className="button-secondary">
-                Get in Touch
-              </a>
+            <div className="relative mt-10 lg:hidden">
+              <div className="absolute left-1/2 top-1/2 h-[18rem] w-[18rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(214,220,234,0.24),transparent_68%)] blur-[80px]" />
+              <div className="hero-frame relative mx-auto max-w-[26rem] overflow-hidden rounded-[32px] px-5 pt-8">
+                <div className="relative z-10 mx-auto max-w-[26rem]">
+                  <Image
+                    src={heroPortrait}
+                    alt="Portrait of Rei Aliaj"
+                    priority
+                    unoptimized
+                    sizes="92vw"
+                    className="hero-portrait h-auto w-full object-contain"
+                  />
+                </div>
+              </div>
             </div>
 
-            <div className="fade-in-4 mt-14 grid gap-3 sm:grid-cols-3">
+
+            <div className="fade-in-4 mt-14 hidden gap-3 sm:grid-cols-3 lg:grid">
               {heroHighlights.map((highlight) => (
                 <div
                   key={highlight}
@@ -209,7 +154,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="relative">
+          <div className="relative hidden lg:block">
             <div className="absolute left-1/2 top-1/2 h-[22rem] w-[22rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(214,220,234,0.24),transparent_68%)] blur-[90px]" />
             <div className="hero-frame relative mx-auto overflow-hidden rounded-[32px] px-6 pt-10 sm:px-10">
  
