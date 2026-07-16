@@ -113,7 +113,7 @@ export const siteCopy = {
         { label: "Start", value: "Nach Vereinbarung" },
       ],
       note:
-        "Einen vollständigen Lebenslauf und weitere Projektbeispiele sende ich gerne auf Anfrage.",
+        "Die Vergütung richtet sich nach Position, Verantwortung und Aufgabenbereich. Einen vollständigen Lebenslauf und weitere Projektbeispiele sende ich gerne auf Anfrage.",
     },
     contact: {
       eyebrow: "06 / Kontakt",
@@ -199,7 +199,7 @@ export const siteCopy = {
         { label: "Start", value: "By agreement" },
       ],
       note:
-        "I am happy to provide my full CV and additional project examples on request.",
+        "Compensation depends on the position, responsibilities, and scope. I am happy to provide my full CV and additional project examples on request.",
     },
     contact: {
       eyebrow: "06 / Contact",
@@ -523,7 +523,7 @@ export const caseStudies: CaseStudy[] = [
           { label: "Rolle", value: "Shopify Developer" },
           { label: "Zeitraum", value: "2021 — 2026" },
           { label: "Integrationen", value: "Shopify API · HubSpot" },
-          { label: "Ergebnis", value: "Langfristige Produktionsbetreuung" },
+          { label: "Ergebnis", value: "$600k+ Jahresumsatz berichtet" },
         ],
       },
       en: {
@@ -554,7 +554,7 @@ export const caseStudies: CaseStudy[] = [
           { label: "Role", value: "Shopify Developer" },
           { label: "Period", value: "2021 — 2026" },
           { label: "Integrations", value: "Shopify API · HubSpot" },
-          { label: "Result", value: "Long-term production ownership" },
+          { label: "Result", value: "$600k+ reported annual revenue" },
         ],
       },
     },
@@ -596,7 +596,7 @@ export const caseStudies: CaseStudy[] = [
           { label: "Rolle", value: "Shopify Design & Development" },
           { label: "Markt", value: "DACH / EU" },
           { label: "Umfang", value: "Store · Katalog · SEO · Markets" },
-          { label: "Ergebnis", value: "Mehrsprachiger EU-Store" },
+          { label: "Ergebnis", value: "$300k+ Jahresumsatz berichtet" },
         ],
       },
       en: {
@@ -627,7 +627,7 @@ export const caseStudies: CaseStudy[] = [
           { label: "Role", value: "Shopify Design & Development" },
           { label: "Market", value: "DACH / EU" },
           { label: "Scope", value: "Store · Catalog · SEO · Markets" },
-          { label: "Result", value: "Multilingual EU storefront" },
+          { label: "Result", value: "$300k+ reported annual revenue" },
         ],
       },
     },
