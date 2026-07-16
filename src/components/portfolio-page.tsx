@@ -56,7 +56,7 @@ export function PortfolioPage({ locale }: PortfolioPageProps) {
               {copy.hero.status}
             </div>
             <p className="eyebrow fade-in-1">{copy.hero.eyebrow}</p>
-            <h1 className="hero-title fade-in-2">
+            <h1 className={`hero-title hero-title-${locale} fade-in-2`}>
               <span className="hero-name">Rei Aliaj</span>
               <span>{copy.hero.headline}</span>
             </h1>

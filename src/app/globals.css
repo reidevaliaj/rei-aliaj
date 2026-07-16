@@ -405,6 +405,10 @@ a {
   line-height: 0.91;
 }
 
+.hero-title-de {
+  font-size: clamp(3.5rem, 5.7vw, 6.4rem);
+}
+
 .hero-title > span {
   display: block;
 }
@@ -1259,7 +1263,12 @@ a {
 
 .availability-facts .button-primary {
   grid-column: 1 / -1;
+  width: fit-content;
+  min-height: 3rem;
+  align-self: start;
+  justify-self: start;
   margin-top: 0.35rem;
+  padding: 0.8rem 1.2rem;
 }
 
 .contact-section {
