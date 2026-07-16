@@ -2,7 +2,10 @@
 
 import { type ChangeEvent, type FormEvent, useState } from "react";
 
+import type { Locale } from "@/lib/site-data";
+
 type ContactFormProps = {
+  locale: Locale;
   email: string;
   whatsappNumber: string;
   whatsappHref: string;
@@ -12,7 +15,7 @@ type FormState = {
   name: string;
   email: string;
   company: string;
-  projectType: string;
+  opportunity: string;
   message: string;
 };
 
@@ -22,208 +25,224 @@ const initialState: FormState = {
   name: "",
   email: "",
   company: "",
-  projectType: "",
+  opportunity: "",
   message: "",
 };
 
-function buildMessage(form: FormState) {
+const formCopy = {
+  de: {
+    eyebrow: "Direkte Nachricht",
+    title: "Kurze Nachricht genügt.",
+    channel: "E-Mail oder WhatsApp",
+    name: "Name",
+    namePlaceholder: "Ihr Name",
+    email: "E-Mail",
+    company: "Unternehmen",
+    companyPlaceholder: "Unternehmen oder Team",
+    opportunity: "Position / Bereich",
+    opportunityPlaceholder: "z. B. Python, Shopify, WordPress",
+    message: "Nachricht",
+    messagePlaceholder:
+      "Erzählen Sie mir kurz von der Position, den Aufgaben und Ihrem Team.",
+    send: "Nachricht senden",
+    sending: "Wird gesendet...",
+    whatsapp: "Per WhatsApp",
+    idle: (email: string, phone: string) =>
+      `Die Nachricht geht direkt an ${email}. Alternativ erreichen Sie mich unter ${phone}.`,
+    sendingFeedback: "Ihre Nachricht wird gesendet...",
+    fallbackError: "Die Nachricht konnte gerade nicht gesendet werden.",
+  },
+  en: {
+    eyebrow: "Direct message",
+    title: "A short message is enough.",
+    channel: "Email or WhatsApp",
+    name: "Name",
+    namePlaceholder: "Your name",
+    email: "Email",
+    company: "Company",
+    companyPlaceholder: "Company or team",
+    opportunity: "Position / area",
+    opportunityPlaceholder: "e.g. Python, Shopify, WordPress",
+    message: "Message",
+    messagePlaceholder:
+      "Tell me briefly about the position, responsibilities, and your team.",
+    send: "Send message",
+    sending: "Sending...",
+    whatsapp: "Use WhatsApp",
+    idle: (email: string, phone: string) =>
+      `Your message goes directly to ${email}. You can also reach me at ${phone}.`,
+    sendingFeedback: "Sending your message...",
+    fallbackError: "Your message could not be sent right now.",
+  },
+} as const;
+
+function buildWhatsAppMessage(form: FormState, locale: Locale) {
+  const labels =
+    locale === "de"
+      ? ["Name", "E-Mail", "Unternehmen", "Position / Bereich", "Nachricht"]
+      : ["Name", "Email", "Company", "Position / area", "Message"];
+
   return [
-    `Name: ${form.name || "-"}`,
-    `Email: ${form.email || "-"}`,
-    `Company: ${form.company || "-"}`,
-    `Project type: ${form.projectType || "-"}`,
+    `${labels[0]}: ${form.name || "-"}`,
+    `${labels[1]}: ${form.email || "-"}`,
+    `${labels[2]}: ${form.company || "-"}`,
+    `${labels[3]}: ${form.opportunity || "-"}`,
     "",
-    "Project details:",
+    `${labels[4]}:`,
     form.message || "-",
   ].join("\n");
 }
 
 export function ContactForm({
+  locale,
   email,
   whatsappNumber,
   whatsappHref,
 }: ContactFormProps) {
+  const copy = formCopy[locale];
   const [form, setForm] = useState<FormState>(initialState);
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>("idle");
-  const [feedback, setFeedback] = useState(
-    `Messages go directly to ${email}, or you can start a WhatsApp chat with ${whatsappNumber}.`,
-  );
+  const [feedback, setFeedback] = useState(copy.idle(email, whatsappNumber));
+
+  const resetFeedback = () => {
+    if (submitStatus !== "idle") {
+      setSubmitStatus("idle");
+      setFeedback(copy.idle(email, whatsappNumber));
+    }
+  };
 
   const updateField =
     (field: keyof FormState) =>
     (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setForm((current) => ({ ...current, [field]: event.target.value }));
-
-      if (submitStatus !== "idle") {
-        setSubmitStatus("idle");
-        setFeedback(
-          `Messages go directly to ${email}, or you can start a WhatsApp chat with ${whatsappNumber}.`,
-        );
-      }
+      resetFeedback();
     };
 
-  const handleEmailSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (submitStatus === "sending") {
-      return;
-    }
+    if (submitStatus === "sending") return;
 
     setSubmitStatus("sending");
-    setFeedback("Sending your message...");
+    setFeedback(copy.sendingFeedback);
 
     try {
       const response = await fetch("/api/contact", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(form),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, locale }),
       });
-
       const data = (await response.json().catch(() => null)) as
         | { message?: string }
         | null;
 
       if (!response.ok) {
-        throw new Error(data?.message || "Unable to send your message right now.");
+        throw new Error(data?.message || copy.fallbackError);
       }
 
       setSubmitStatus("success");
       setForm(initialState);
-      setFeedback(
-        data?.message || `Your message has been sent to ${email}. I will get back to you soon.`,
-      );
+      setFeedback(data?.message || copy.idle(email, whatsappNumber));
     } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "Something went wrong while sending your message.";
-
       setSubmitStatus("error");
-      setFeedback(message);
+      setFeedback(error instanceof Error ? error.message : copy.fallbackError);
     }
   };
 
   const openWhatsApp = () => {
-    const text = buildMessage(form);
     const separator = whatsappHref.includes("?") ? "&" : "?";
-
     window.open(
-      `${whatsappHref}${separator}text=${encodeURIComponent(text)}`,
+      `${whatsappHref}${separator}text=${encodeURIComponent(buildWhatsAppMessage(form, locale))}`,
       "_blank",
       "noopener,noreferrer",
     );
   };
 
   return (
-    <div className="glass-panel rounded-[30px] p-6 sm:p-7">
-      <div className="mb-6 flex items-start justify-between gap-4">
+    <div className="contact-form-panel">
+      <div className="form-heading">
         <div>
-          <p className="eyebrow">Direct form</p>
-          <h3 className="mt-3 font-display text-2xl leading-tight tracking-[-0.04em] text-white">
-            Tell me what you need
-          </h3>
+          <p className="eyebrow">{copy.eyebrow}</p>
+          <h3>{copy.title}</h3>
         </div>
-        <span className="ghost-pill rounded-full px-3 py-1 text-[0.68rem] uppercase tracking-[0.28em] text-white/48">
-          Email or WhatsApp
-        </span>
+        <span>{copy.channel}</span>
       </div>
 
-      <form onSubmit={handleEmailSubmit} className="space-y-4">
-        <div className="grid gap-4 sm:grid-cols-2">
-          <label className="space-y-2">
-            <span className="text-xs uppercase tracking-[0.28em] text-white/42">
-              Name
-            </span>
+      <form onSubmit={handleSubmit} className="contact-form">
+        <div className="form-row">
+          <label>
+            <span>{copy.name}</span>
             <input
               className="field-input"
               value={form.name}
               onChange={updateField("name")}
-              placeholder="Your name"
+              placeholder={copy.namePlaceholder}
+              autoComplete="name"
               required
             />
           </label>
-          <label className="space-y-2">
-            <span className="text-xs uppercase tracking-[0.28em] text-white/42">
-              Email
-            </span>
+          <label>
+            <span>{copy.email}</span>
             <input
               type="email"
               className="field-input"
               value={form.email}
               onChange={updateField("email")}
-              placeholder="you@example.com"
+              placeholder="name@company.com"
+              autoComplete="email"
               required
             />
           </label>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <label className="space-y-2">
-            <span className="text-xs uppercase tracking-[0.28em] text-white/42">
-              Company
-            </span>
+        <div className="form-row">
+          <label>
+            <span>{copy.company}</span>
             <input
               className="field-input"
               value={form.company}
               onChange={updateField("company")}
-              placeholder="Brand or company"
+              placeholder={copy.companyPlaceholder}
+              autoComplete="organization"
             />
           </label>
-          <label className="space-y-2">
-            <span className="text-xs uppercase tracking-[0.28em] text-white/42">
-              Project type
-            </span>
+          <label>
+            <span>{copy.opportunity}</span>
             <input
               className="field-input"
-              value={form.projectType}
-              onChange={updateField("projectType")}
-              placeholder="Theme work, app, rebuild..."
+              value={form.opportunity}
+              onChange={updateField("opportunity")}
+              placeholder={copy.opportunityPlaceholder}
             />
           </label>
         </div>
 
-        <label className="space-y-2">
-          <span className="text-xs uppercase tracking-[0.28em] text-white/42">
-            Project details
-          </span>
+        <label>
+          <span>{copy.message}</span>
           <textarea
-            className="field-input min-h-[160px] resize-y py-4"
+            className="field-input"
             value={form.message}
             onChange={updateField("message")}
-            placeholder="Tell me about the store, the challenge, and what kind of help you need."
+            placeholder={copy.messagePlaceholder}
             required
           />
         </label>
 
-        <div className="flex flex-col gap-3 pt-2 sm:flex-row">
+        <div className="form-actions">
           <button
             type="submit"
             disabled={submitStatus === "sending"}
-            className="button-primary cursor-pointer border-0 disabled:cursor-not-allowed disabled:opacity-70"
+            className="button-primary"
           >
-            {submitStatus === "sending" ? "Sending..." : "Send Inquiry"}
+            {submitStatus === "sending" ? copy.sending : copy.send}
           </button>
-          <button
-            type="button"
-            onClick={openWhatsApp}
-            className="button-secondary cursor-pointer"
-          >
-            Chat on WhatsApp
+          <button type="button" onClick={openWhatsApp} className="button-secondary">
+            {copy.whatsapp}
           </button>
         </div>
       </form>
 
-      <p
-        className={`mt-4 text-sm leading-7 ${
-          submitStatus === "error"
-            ? "text-red-200/90"
-            : submitStatus === "success"
-              ? "text-emerald-100/85"
-              : "text-[var(--muted)]"
-        }`}
-      >
+      <p className={`form-feedback form-feedback-${submitStatus}`} aria-live="polite">
         {feedback}
       </p>
     </div>

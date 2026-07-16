@@ -4,72 +4,83 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { CloseIcon, MenuIcon } from "@/components/icons";
+import { siteCopy, type Locale } from "@/lib/site-data";
 
-const mobileLinks = [
-  ["Services", "#services"],
-  ["AI Assistant", "#ai-assistant"],
-  ["Case Studies", "#work"],
-  ["About Me", "#about"],
-  ["Contact", "#contact"],
-] as const;
+type SiteHeaderProps = {
+  locale: Locale;
+  alternateHref?: string;
+};
 
-export function SiteHeader() {
+export function SiteHeader({ locale, alternateHref }: SiteHeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const copy = siteCopy[locale].nav;
+  const homeHref = locale === "de" ? "/" : "/en";
+  const languageHref = alternateHref ?? (locale === "de" ? "/en" : "/");
+  const links = [
+    [copy.expertise, `${homeHref}#expertise`],
+    [copy.work, `${homeHref}#work`],
+    [copy.experience, `${homeHref}#experience`],
+    [copy.about, `${homeHref}#about`],
+    [copy.contact, `${homeHref}#contact`],
+  ] as const;
 
   const closeMenu = () => setIsOpen(false);
 
   return (
-    <header className="site-header px-4 py-3 md:px-10 md:py-5">
-      <div className="mx-auto max-w-7xl">
-        <div className="flex items-center justify-between gap-4">
-          <Link
-            href="/"
-            className="shrink-0 font-display text-[0.82rem] font-semibold uppercase tracking-[0.28em] text-white/88 md:text-sm md:tracking-[0.32em]"
-            onClick={closeMenu}
-          >
-            Rei Aliaj
-          </Link>
+    <header className="site-header">
+      <div className="header-inner">
+        <Link href={homeHref} className="site-wordmark" onClick={closeMenu}>
+          <span>R</span>
+          <strong>Rei Aliaj</strong>
+        </Link>
 
-          <nav className="hidden items-center gap-7 text-xs uppercase tracking-[0.3em] text-white/42 lg:flex">
-            <a href="#services" className="transition-colors hover:text-white/84">
-              Services
-            </a>
-            <a href="#ai-assistant" className="transition-colors hover:text-white/84">
-              AI Assistant
-            </a>
-            <a href="#work" className="transition-colors hover:text-white/84">
-              Case Studies
-            </a>
-            <a href="#about" className="transition-colors hover:text-white/84">
-              About Me
-            </a>
-            <a href="#contact" className="transition-colors hover:text-white/84">
-              Contact
-            </a>
-          </nav>
+        <nav className="desktop-nav" aria-label="Primary navigation">
+          {links.map(([label, href]) => (
+            <Link href={href} key={label}>
+              {label}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="header-actions">
+          <Link
+            href={languageHref}
+            className="language-switch"
+            hrefLang={locale === "de" ? "en" : "de"}
+            aria-label={locale === "de" ? "Switch to English" : "Auf Deutsch wechseln"}
+          >
+            <span className={locale === "de" ? "active" : ""}>DE</span>
+            <i />
+            <span className={locale === "en" ? "active" : ""}>EN</span>
+          </Link>
 
           <button
             type="button"
             aria-expanded={isOpen}
-            aria-label={isOpen ? "Close menu" : "Open menu"}
+            aria-controls="mobile-navigation"
+            aria-label={isOpen ? copy.closeMenu : copy.openMenu}
             onClick={() => setIsOpen((current) => !current)}
-            className="mobile-menu-button lg:hidden"
+            className="mobile-menu-button"
           >
             {isOpen ? <CloseIcon className="h-5 w-5" /> : <MenuIcon className="h-5 w-5" />}
           </button>
         </div>
 
-        <div className={`mobile-menu-panel lg:hidden ${isOpen ? "open" : ""}`}>
+        <div
+          id="mobile-navigation"
+          className={`mobile-menu-panel ${isOpen ? "open" : ""}`}
+        >
           <div className="mobile-menu-shell">
-            {mobileLinks.map(([label, href]) => (
-              <a
+            {links.map(([label, href], index) => (
+              <Link
                 key={label}
                 href={href}
                 onClick={closeMenu}
                 className="mobile-menu-link"
               >
                 <span>{label}</span>
-              </a>
+                <small>0{index + 1}</small>
+              </Link>
             ))}
           </div>
         </div>

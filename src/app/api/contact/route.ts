@@ -1,4 +1,4 @@
-import { contactDetails } from "@/lib/site-data";
+import { contactDetails, type Locale } from "@/lib/site-data";
 
 const RESEND_API_URL = "https://api.resend.com/emails";
 
@@ -6,9 +6,39 @@ type ContactPayload = {
   name?: string;
   email?: string;
   company?: string;
-  projectType?: string;
+  opportunity?: string;
   message?: string;
+  locale?: Locale;
 };
+
+type NormalizedPayload = Required<Omit<ContactPayload, "locale">> & {
+  locale: Locale;
+};
+
+const messages = {
+  de: {
+    title: "Neue Anfrage über die Portfolio-Website",
+    company: "Unternehmen",
+    opportunity: "Position / Bereich",
+    message: "Nachricht",
+    invalidBody: "Ungültige Anfrage.",
+    required: "Name, E-Mail und Nachricht sind erforderlich.",
+    invalidEmail: "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
+    unavailable: "Die Nachricht konnte gerade nicht gesendet werden.",
+    success: `Ihre Nachricht wurde an ${contactDetails.email} gesendet.`,
+  },
+  en: {
+    title: "New portfolio website inquiry",
+    company: "Company",
+    opportunity: "Position / area",
+    message: "Message",
+    invalidBody: "Invalid request.",
+    required: "Name, email, and message are required.",
+    invalidEmail: "Please provide a valid email address.",
+    unavailable: "Your message could not be sent right now.",
+    success: `Your message has been sent to ${contactDetails.email}.`,
+  },
+} as const;
 
 function isValidEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -23,29 +53,33 @@ function escapeHtml(value: string) {
     .replaceAll("'", "&#39;");
 }
 
-function buildTextEmail(payload: Required<ContactPayload>) {
+function buildTextEmail(payload: NormalizedPayload) {
+  const copy = messages[payload.locale];
+
   return [
-    "New contact form submission",
+    copy.title,
     "",
     `Name: ${payload.name}`,
     `Email: ${payload.email}`,
-    `Company: ${payload.company || "-"}`,
-    `Project type: ${payload.projectType || "-"}`,
+    `${copy.company}: ${payload.company || "-"}`,
+    `${copy.opportunity}: ${payload.opportunity || "-"}`,
     "",
-    "Project details:",
+    `${copy.message}:`,
     payload.message,
   ].join("\n");
 }
 
-function buildHtmlEmail(payload: Required<ContactPayload>) {
+function buildHtmlEmail(payload: NormalizedPayload) {
+  const copy = messages[payload.locale];
+
   return `
     <div style="font-family: Arial, sans-serif; color: #16181d; line-height: 1.7;">
-      <h2 style="margin: 0 0 20px;">New contact form submission</h2>
+      <h2 style="margin: 0 0 20px;">${copy.title}</h2>
       <p><strong>Name:</strong> ${escapeHtml(payload.name)}</p>
       <p><strong>Email:</strong> ${escapeHtml(payload.email)}</p>
-      <p><strong>Company:</strong> ${escapeHtml(payload.company || "-")}</p>
-      <p><strong>Project type:</strong> ${escapeHtml(payload.projectType || "-")}</p>
-      <p style="margin: 24px 0 8px;"><strong>Project details:</strong></p>
+      <p><strong>${copy.company}:</strong> ${escapeHtml(payload.company || "-")}</p>
+      <p><strong>${copy.opportunity}:</strong> ${escapeHtml(payload.opportunity || "-")}</p>
+      <p style="margin: 24px 0 8px;"><strong>${copy.message}:</strong></p>
       <p style="white-space: pre-wrap; margin: 0;">${escapeHtml(payload.message)}</p>
     </div>
   `;
@@ -68,36 +102,27 @@ export async function POST(request: Request) {
   try {
     payload = (await request.json()) as ContactPayload;
   } catch {
-    return Response.json({ message: "Invalid request body." }, { status: 400 });
+    return Response.json({ message: messages.en.invalidBody }, { status: 400 });
   }
 
-  const name = payload.name?.trim() || "";
-  const email = payload.email?.trim() || "";
-  const company = payload.company?.trim() || "";
-  const projectType = payload.projectType?.trim() || "";
-  const message = payload.message?.trim() || "";
-
-  if (!name || !email || !message) {
-    return Response.json(
-      { message: "Name, email, and project details are required." },
-      { status: 400 },
-    );
-  }
-
-  if (!isValidEmail(email)) {
-    return Response.json(
-      { message: "Please provide a valid email address." },
-      { status: 400 },
-    );
-  }
-
-  const normalizedPayload = {
-    name,
-    email,
-    company,
-    projectType,
-    message,
+  const locale: Locale = payload.locale === "de" ? "de" : "en";
+  const copy = messages[locale];
+  const normalizedPayload: NormalizedPayload = {
+    name: payload.name?.trim() || "",
+    email: payload.email?.trim() || "",
+    company: payload.company?.trim() || "",
+    opportunity: payload.opportunity?.trim() || "",
+    message: payload.message?.trim() || "",
+    locale,
   };
+
+  if (!normalizedPayload.name || !normalizedPayload.email || !normalizedPayload.message) {
+    return Response.json({ message: copy.required }, { status: 400 });
+  }
+
+  if (!isValidEmail(normalizedPayload.email)) {
+    return Response.json({ message: copy.invalidEmail }, { status: 400 });
+  }
 
   const resendResponse = await fetch(RESEND_API_URL, {
     method: "POST",
@@ -108,8 +133,8 @@ export async function POST(request: Request) {
     body: JSON.stringify({
       from: `Rei Aliaj Website <${contactDetails.email}>`,
       to: [contactDetails.email],
-      reply_to: email,
-      subject: `New Shopify inquiry from ${name}`,
+      reply_to: normalizedPayload.email,
+      subject: `New job opportunity from ${normalizedPayload.name}`,
       text: buildTextEmail(normalizedPayload),
       html: buildHtmlEmail(normalizedPayload),
     }),
@@ -123,15 +148,11 @@ export async function POST(request: Request) {
     return Response.json(
       {
         message:
-          resendError?.message ||
-          resendError?.error?.message ||
-          "Unable to send your message right now.",
+          resendError?.message || resendError?.error?.message || copy.unavailable,
       },
       { status: 500 },
     );
   }
 
-  return Response.json({
-    message: `Your message has been sent to ${contactDetails.email}.`,
-  });
+  return Response.json({ message: copy.success });
 }

@@ -13,9 +13,24 @@ const displayFont = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Rei Aliaj | Shopify Technical Solutions",
+  metadataBase: new URL("https://rei-aliaj.com"),
+  title: "Rei Aliaj | Full-Stack Entwickler für KI, Shopify & WordPress",
   description:
-    "Technical Shopify solutions, custom apps, integrations, automation, and freelance support for ecommerce brands.",
+    "Remote Full-Stack-Entwickler mit über 10 Jahren Erfahrung in Python-Automatisierung, KI-Integrationen, Shopify und WordPress.",
+  alternates: {
+    canonical: "/",
+    languages: { de: "/", en: "/en" },
+  },
+  openGraph: {
+    type: "website",
+    locale: "de_DE",
+    alternateLocale: "en_US",
+    url: "/",
+    siteName: "Rei Aliaj",
+    title: "Rei Aliaj | Full-Stack Entwickler",
+    description:
+      "Python-Automatisierung, KI-Integrationen, Shopify und WordPress für Remote-Teams.",
+  },
 };
 
 export default function RootLayout({
@@ -25,7 +40,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="de"
       className={`${bodyFont.variable} ${displayFont.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
