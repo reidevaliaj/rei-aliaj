@@ -13,10 +13,10 @@ const displayFont = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://rei-aliaj.com"),
-  title: "Rei Aliaj | Full-Stack Entwickler für KI, Shopify & WordPress",
+  metadataBase: new URL("https://www.rei-aliaj.com"),
+  title: "Rei Aliaj | AI Engineer & Automation Developer",
   description:
-    "Remote Full-Stack-Entwickler mit über 10 Jahren Erfahrung in Python-Automatisierung, KI-Integrationen, Shopify und WordPress.",
+    "AI Engineer und Automation Developer für Python, LLM-Anwendungen, RAG, Voice AI, Datenpipelines und API-Integrationen. Offen für Remote-Rollen und B2B-Projekte.",
   alternates: {
     canonical: "/",
     languages: { de: "/", en: "/en" },
@@ -27,10 +27,11 @@ export const metadata: Metadata = {
     alternateLocale: "en_US",
     url: "/",
     siteName: "Rei Aliaj",
-    title: "Rei Aliaj | Full-Stack Entwickler",
+    title: "Rei Aliaj | AI Engineer & Automation Developer",
     description:
-      "Python-Automatisierung, KI-Integrationen, Shopify und WordPress für Remote-Teams.",
+      "KI-Anwendungen, RAG, Voice AI und Python-Automatisierung. Von Daten zu zuverlässigen Workflows.",
   },
+  twitter: { card: "summary_large_image" },
 };
 
 export default function RootLayout({

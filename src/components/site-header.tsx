@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { CloseIcon, MenuIcon } from "@/components/icons";
-import { siteCopy, type Locale } from "@/lib/site-data";
+import { navigationCopy, type Locale } from "@/lib/site-data";
 
 type SiteHeaderProps = {
   locale: Locale;
@@ -13,7 +13,7 @@ type SiteHeaderProps = {
 
 export function SiteHeader({ locale, alternateHref }: SiteHeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const copy = siteCopy[locale].nav;
+  const copy = navigationCopy[locale];
   const homeHref = locale === "de" ? "/" : "/en";
   const languageHref = alternateHref ?? (locale === "de" ? "/en" : "/");
   const links = [
@@ -27,14 +27,28 @@ export function SiteHeader({ locale, alternateHref }: SiteHeaderProps) {
   const closeMenu = () => setIsOpen(false);
 
   return (
-    <header className="site-header">
+    <header
+      className="site-header"
+      onKeyDown={(event) => {
+        if (event.key === "Escape") closeMenu();
+      }}
+    >
       <div className="header-inner">
         <Link href={homeHref} className="site-wordmark" onClick={closeMenu}>
-          <span>R</span>
-          <strong>Rei Aliaj</strong>
+          <span>
+            R<span className="wordmark-cursor">_</span>
+          </span>
+          <strong>
+            Rei Aliaj<small>AI & AUTOMATION</small>
+          </strong>
         </Link>
 
-        <nav className="desktop-nav" aria-label="Primary navigation">
+        <nav
+          className="desktop-nav"
+          aria-label={
+            locale === "de" ? "Hauptnavigation" : "Primary navigation"
+          }
+        >
           {links.map(([label, href]) => (
             <Link href={href} key={label}>
               {label}
@@ -47,7 +61,9 @@ export function SiteHeader({ locale, alternateHref }: SiteHeaderProps) {
             href={languageHref}
             className="language-switch"
             hrefLang={locale === "de" ? "en" : "de"}
-            aria-label={locale === "de" ? "Switch to English" : "Auf Deutsch wechseln"}
+            aria-label={
+              locale === "de" ? "Switch to English" : "Auf Deutsch wechseln"
+            }
           >
             <span className={locale === "de" ? "active" : ""}>DE</span>
             <i />
@@ -62,7 +78,11 @@ export function SiteHeader({ locale, alternateHref }: SiteHeaderProps) {
             onClick={() => setIsOpen((current) => !current)}
             className="mobile-menu-button"
           >
-            {isOpen ? <CloseIcon className="h-5 w-5" /> : <MenuIcon className="h-5 w-5" />}
+            {isOpen ? (
+              <CloseIcon className="h-5 w-5" />
+            ) : (
+              <MenuIcon className="h-5 w-5" />
+            )}
           </button>
         </div>
 

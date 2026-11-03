@@ -12,7 +12,9 @@ export function generateStaticParams() {
   return caseStudies.map((study) => ({ slug: study.slug }));
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const study = getCaseStudy(slug);
 
@@ -21,6 +23,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: `${study.title} Case Study | Rei Aliaj`,
     description: study.content.de.summary,
+    openGraph: {
+      title: `${study.title} | Rei Aliaj`,
+      description: study.content.de.summary,
+      url: `/work/${slug}`,
+      locale: "de_DE",
+      images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
+    },
     alternates: {
       canonical: `/work/${slug}`,
       languages: { de: `/work/${slug}`, en: `/en/work/${slug}` },

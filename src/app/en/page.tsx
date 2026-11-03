@@ -3,12 +3,22 @@ import type { Metadata } from "next";
 import { PortfolioPage } from "@/components/portfolio-page";
 
 export const metadata: Metadata = {
-  title: "Rei Aliaj | Full-Stack Developer for AI, Shopify & WordPress",
+  title: "Rei Aliaj | AI Engineer & Automation Developer",
   description:
-    "Remote full-stack developer with 10+ years of experience in Python automation, AI integrations, Shopify, and WordPress.",
+    "AI Engineer and Automation Developer building Python systems, LLM applications, RAG, voice AI, data pipelines, and API integrations. Available for remote roles and B2B projects.",
   alternates: {
     canonical: "/en",
     languages: { de: "/", en: "/en" },
+  },
+  openGraph: {
+    title: "Rei Aliaj | AI Engineer & Automation Developer",
+    description:
+      "AI applications, RAG, voice AI, and Python automation. From data to dependable workflows.",
+    url: "/en",
+    locale: "en_US",
+    alternateLocale: "de_DE",
+    type: "website",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
   },
 };
 

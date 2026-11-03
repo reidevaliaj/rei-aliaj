@@ -40,7 +40,7 @@ const formCopy = {
     company: "Unternehmen",
     companyPlaceholder: "Unternehmen oder Team",
     opportunity: "Position / Bereich",
-    opportunityPlaceholder: "z. B. Python, Shopify, WordPress",
+    opportunityPlaceholder: "z. B. AI Engineer, Python, Automation",
     message: "Nachricht",
     messagePlaceholder:
       "Erzählen Sie mir kurz von der Position, den Aufgaben und Ihrem Team.",
@@ -62,7 +62,7 @@ const formCopy = {
     company: "Company",
     companyPlaceholder: "Company or team",
     opportunity: "Position / area",
-    opportunityPlaceholder: "e.g. Python, Shopify, WordPress",
+    opportunityPlaceholder: "e.g. AI Engineer, Python, Automation",
     message: "Message",
     messagePlaceholder:
       "Tell me briefly about the position, responsibilities, and your team.",
@@ -132,9 +132,9 @@ export function ContactForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...form, locale }),
       });
-      const data = (await response.json().catch(() => null)) as
-        | { message?: string }
-        | null;
+      const data = (await response.json().catch(() => null)) as {
+        message?: string;
+      } | null;
 
       if (!response.ok) {
         throw new Error(data?.message || copy.fallbackError);
@@ -236,13 +236,20 @@ export function ContactForm({
           >
             {submitStatus === "sending" ? copy.sending : copy.send}
           </button>
-          <button type="button" onClick={openWhatsApp} className="button-secondary">
+          <button
+            type="button"
+            onClick={openWhatsApp}
+            className="button-secondary"
+          >
             {copy.whatsapp}
           </button>
         </div>
       </form>
 
-      <p className={`form-feedback form-feedback-${submitStatus}`} aria-live="polite">
+      <p
+        className={`form-feedback form-feedback-${submitStatus}`}
+        aria-live="polite"
+      >
         {feedback}
       </p>
     </div>

@@ -1,307 +1,276 @@
-import Image from "next/image";
 import Link from "next/link";
-import heroPortrait from "../../public/rei-aliaj2.png";
-
 import { ContactForm } from "@/components/contact-form";
 import {
   ArrowUpRightIcon,
   LinkedInIcon,
   MailIcon,
-  MapPinIcon,
-  SparkIcon,
   WhatsAppIcon,
 } from "@/components/icons";
-import { ProjectVisual } from "@/components/project-visual";
+import { ProjectVisual, SystemDiagram } from "@/components/project-visual";
 import { SiteHeader } from "@/components/site-header";
 import {
   caseStudies,
   contactDetails,
   expertiseAreas,
   experience,
-  type Locale,
   siteCopy,
+  toolkit,
+  type Locale,
 } from "@/lib/site-data";
 
-type PortfolioPageProps = {
-  locale: Locale;
-};
-
-const tracks = ["automation", "shopify", "wordpress"] as const;
-
-function caseStudyPath(locale: Locale, slug: string) {
-  return locale === "de" ? `/work/${slug}` : `/en/work/${slug}`;
-}
-
-export function PortfolioPage({ locale }: PortfolioPageProps) {
-  const copy = siteCopy[locale];
-
+function SectionHeading({
+  eyebrow,
+  title,
+  intro,
+}: {
+  eyebrow: string;
+  title: string;
+  intro: string;
+}) {
   return (
-    <main className="landing-stage">
-      <div className="ambient-layer" aria-hidden="true">
-        <span className="ambient-orb ambient-orb-a ambient-one" />
-        <span className="ambient-orb ambient-orb-b ambient-two" />
-        <span className="ambient-orb ambient-orb-c ambient-three" />
-        <span className="ambient-orb ambient-orb-a ambient-four" />
-        <span className="ambient-orb ambient-orb-b ambient-five" />
-        <span className="ambient-orb ambient-orb-c ambient-six" />
+    <div className="section-heading">
+      <div>
+        <p className="eyebrow">{eyebrow}</p>
+        <h2>{title}</h2>
       </div>
-
+      <p>{intro}</p>
+    </div>
+  );
+}
+export function PortfolioPage({ locale }: { locale: Locale }) {
+  const copy = siteCopy[locale];
+  const home = locale === "de" ? "" : "/en";
+  return (
+    <main className="landing-stage" lang={locale} id="top">
       <SiteHeader locale={locale} />
-
-      <section id="top" className="hero-section page-shell">
+      <section className="hero-section page-shell">
+        <div className="hero-topline">
+          <span className="availability-badge">
+            <i />
+            {copy.hero.status}
+          </span>
+          <span className="mono">TIRANA / REMOTE</span>
+        </div>
         <div className="hero-grid">
           <div className="hero-copy">
-            <div className="availability-badge fade-in-1">
-              <span />
-              {copy.hero.status}
-            </div>
-            <p className="eyebrow fade-in-1">{copy.hero.eyebrow}</p>
-            <h1 className={`hero-title hero-title-${locale} fade-in-2`}>
-              <span className="hero-name">Rei Aliaj</span>
-              <span>{copy.hero.headline}</span>
+            <p className="eyebrow">{copy.hero.eyebrow}</p>
+            <h1>
+              {copy.hero.headline[0]}
+              <br />
+              <span>{copy.hero.headline[1]}</span>
             </h1>
-            <p className="hero-intro fade-in-3">{copy.hero.intro}</p>
-            <p className="hero-availability fade-in-3">{copy.hero.availability}</p>
-
-            <div className="hero-mobile-portrait lg:hidden">
-              <div className="portrait-glow" />
-              <div className="hero-frame">
-                <Image
-                  src={heroPortrait}
-                  alt="Rei Aliaj"
-                  priority
-                  unoptimized
-                  sizes="92vw"
-                  className="hero-portrait"
-                />
-              </div>
-            </div>
-
-            <div className="hero-actions fade-in-4">
+            <p className="hero-intro">{copy.hero.intro}</p>
+            <div className="hero-actions">
               <a href="#work" className="button-primary">
                 {copy.hero.workCta}
+                <ArrowUpRightIcon />
               </a>
-              <a href="#contact" className="button-secondary">
+              <a href="#contact" className="text-link">
                 {copy.hero.contactCta}
+                <span>↗</span>
               </a>
             </div>
-
-            <div className="hero-stats fade-in-4">
-              {copy.hero.stats.map((stat) => (
-                <div key={stat.label}>
-                  <strong>{stat.value}</strong>
-                  <span>{stat.label}</span>
-                </div>
-              ))}
-            </div>
+            <p className="hero-availability">{copy.hero.availability}</p>
           </div>
-
-          <div className="hero-desktop-portrait">
-            <div className="portrait-glow" />
-            <div className="hero-frame">
-              <div className="portrait-label">FULL-STACK / REMOTE</div>
-              <Image
-                src={heroPortrait}
-                alt="Rei Aliaj"
-                priority
-                unoptimized
-                sizes="46vw"
-                className="hero-portrait"
-              />
-              <div className="portrait-footer">
-                <span>PYTHON · SHOPIFY · WORDPRESS</span>
-                <span>TIRANA / REMOTE</span>
+          <SystemDiagram locale={locale} />
+        </div>
+        <div className="hero-baseline">
+          <span>{copy.hero.footnote}</span>
+          <a href="#expertise">
+            {locale === "de"
+              ? "Engineering entdecken"
+              : "Explore the engineering"}{" "}
+            <span>↓</span>
+          </a>
+        </div>
+      </section>
+      <div className="focus-strip">
+        <div className="page-shell">
+          {copy.strip.map((item) => (
+            <span key={item}>
+              <i />
+              {item}
+            </span>
+          ))}
+        </div>
+      </div>
+      <section id="expertise" className="section-block page-shell">
+        <SectionHeading {...copy.expertise} />
+        <div className="expertise-grid">
+          {expertiseAreas.map((area) => (
+            <article className="expertise-card" key={area.number}>
+              <span className="card-number">{area.number} /</span>
+              <h3>{area.title[locale]}</h3>
+              <p>{area.summary[locale]}</p>
+              <div className="tags">
+                {area.tags.map((tag) => (
+                  <span key={tag}>{tag}</span>
+                ))}
               </div>
-            </div>
+            </article>
+          ))}
+        </div>
+      </section>
+      <section id="work" className="section-block work-section">
+        <div className="page-shell">
+          <SectionHeading {...copy.work} />
+          <div className="project-grid">
+            {caseStudies.map((study, index) => (
+              <article
+                className={`project-card ${index === 0 ? "project-featured" : ""}`}
+                key={study.slug}
+              >
+                <Link
+                  href={`${home}/work/${study.slug}`}
+                  className="project-visual-link"
+                  aria-label={`${study.title} — ${copy.work.caseStudy}`}
+                >
+                  <ProjectVisual study={study} locale={locale} />
+                </Link>
+                <div className="project-card-body">
+                  <div className="project-meta">
+                    <span>{study.content[locale].category}</span>
+                    <span>0{index + 1}</span>
+                  </div>
+                  <h3>
+                    <Link href={`${home}/work/${study.slug}`}>
+                      {study.title}
+                    </Link>
+                  </h3>
+                  <p>{study.content[locale].cardResult}</p>
+                  <div className="tags">
+                    {study.stack.map((tag) => (
+                      <span key={tag}>{tag}</span>
+                    ))}
+                  </div>
+                  <Link
+                    className="project-link"
+                    href={`${home}/work/${study.slug}`}
+                  >
+                    {copy.work.caseStudy}
+                    <ArrowUpRightIcon />
+                  </Link>
+                </div>
+              </article>
+            ))}
           </div>
         </div>
       </section>
-
-      <section id="expertise" className="section-block page-shell">
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">{copy.expertise.eyebrow}</p>
-            <h2>{copy.expertise.title}</h2>
-          </div>
-          <p>{copy.expertise.intro}</p>
-        </div>
-
-        <div className="expertise-grid">
-          {expertiseAreas.map((area) => (
-            <article className={`expertise-card expertise-${area.id}`} key={area.id}>
-              <div className="expertise-topline">
-                <span>{area.number}</span>
-                <i />
-              </div>
-              <h3>{area.title[locale]}</h3>
-              <p>{area.summary[locale]}</p>
-              <ul>
-                {area.capabilities[locale].map((capability) => (
-                  <li key={capability}>
-                    <SparkIcon className="h-4 w-4" />
-                    {capability}
-                  </li>
-                ))}
-              </ul>
-              <div className="stack-list">
-                {area.stack.map((item) => (
+      <section id="stack" className="section-block page-shell">
+        <SectionHeading {...copy.toolkit} />
+        <div className="toolkit-grid">
+          {toolkit.map((group, index) => (
+            <article key={group.title.en}>
+              <span className="card-number">0{index + 1}</span>
+              <h3>{group.title[locale]}</h3>
+              <div className="toolkit-items">
+                {group.items.map((item) => (
                   <span key={item}>{item}</span>
                 ))}
               </div>
             </article>
           ))}
         </div>
-      </section>
-
-      <section id="work" className="section-block page-shell">
-        <div className="section-heading work-heading">
-          <div>
-            <p className="eyebrow">{copy.work.eyebrow}</p>
-            <h2>{copy.work.title}</h2>
+        <div className="process-section">
+          <div className="process-heading">
+            <p className="eyebrow">{copy.process.eyebrow}</p>
+            <h3>{copy.process.title}</h3>
           </div>
-          <p>{copy.work.intro}</p>
-        </div>
-
-        <div className="project-groups">
-          {tracks.map((track) => {
-            const area = expertiseAreas.find((item) => item.id === track);
-            const projects = caseStudies.filter((study) => study.track === track);
-
-            return (
-              <div className="project-group" key={track}>
-                <div className="project-group-label">
-                  <span>{area?.number}</span>
-                  <h3>{area?.title[locale]}</h3>
-                  <i />
-                </div>
-
-                <div className="project-grid">
-                  {projects.map((study) => {
-                    const content = study.content[locale];
-
-                    return (
-                      <article className="project-card" key={study.slug}>
-                        <Link href={caseStudyPath(locale, study.slug)} className="project-visual-link">
-                          <ProjectVisual study={study} />
-                        </Link>
-                        <div className="project-card-body">
-                          <div className="project-meta">
-                            <span>{content.category}</span>
-                            <span>{content.period}</span>
-                          </div>
-                          <h4>{study.title}</h4>
-                          <p>{content.cardResult}</p>
-                          <div className="project-stack">
-                            {study.stack.slice(0, 4).map((item) => (
-                              <span key={item}>{item}</span>
-                            ))}
-                          </div>
-                          <div className="project-links">
-                            <Link href={caseStudyPath(locale, study.slug)}>
-                              {copy.work.caseStudy}
-                              <ArrowUpRightIcon className="h-4 w-4" />
-                            </Link>
-                            {study.website ? (
-                              <a href={study.website} target="_blank" rel="noreferrer">
-                                {copy.work.live}
-                              </a>
-                            ) : (
-                              <span>{copy.work.demo}</span>
-                            )}
-                          </div>
-                        </div>
-                      </article>
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          })}
+          <ol className="process-grid">
+            {copy.process.steps.map((step, index) => (
+              <li key={step.title}>
+                <span>0{index + 1}</span>
+                <h4>{step.title}</h4>
+                <p>{step.detail}</p>
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
-
-      <section id="experience" className="section-block page-shell experience-section">
+      <section
+        id="experience"
+        className="section-block page-shell experience-section"
+      >
         <div className="experience-intro">
           <p className="eyebrow">{copy.experience.eyebrow}</p>
           <h2>{copy.experience.title}</h2>
           <p>{copy.experience.intro}</p>
+          <span className="experience-stamp">CODE. CONNECT. AUTOMATE.</span>
         </div>
         <div className="experience-list">
           {experience.map((item) => (
-            <article key={`${item.company}-${item.period}`}>
-              <div className="experience-marker" />
-              <div>
-                <span>{item.period}</span>
-                <h3>{item.role[locale]}</h3>
-                <strong>{item.company}</strong>
-                <p>{item.detail[locale]}</p>
+            <article key={item.company}>
+              <span className="experience-period mono">{item.period}</span>
+              <h3>{item.company}</h3>
+              <strong>{item.role[locale]}</strong>
+              <p>{item.detail[locale]}</p>
+              <div className="tags">
+                {item.tags.map((tag) => (
+                  <span key={tag}>{tag}</span>
+                ))}
               </div>
             </article>
           ))}
         </div>
       </section>
-
-      <section id="about" className="section-block page-shell about-section">
-        <div className="about-copy">
-          <p className="eyebrow">{copy.about.eyebrow}</p>
-          <h2>{copy.about.title}</h2>
-          {copy.about.paragraphs.map((text) => (
-            <p key={text}>{text}</p>
-          ))}
-        </div>
-        <div className="about-details">
-          {copy.about.details.map((detail) => (
-            <div key={detail.label}>
-              <span>{detail.label}</span>
-              <strong>{detail.value}</strong>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="section-block page-shell">
-        <div className="availability-panel">
-          <div className="availability-copy">
-            <p className="eyebrow">{copy.availability.eyebrow}</p>
-            <h2>{copy.availability.title}</h2>
-            <p>{copy.availability.intro}</p>
-            <p className="availability-note">{copy.availability.note}</p>
-          </div>
-          <div className="availability-facts">
-            {copy.availability.facts.map((fact) => (
-              <div key={fact.label}>
-                <span>{fact.label}</span>
-                <strong>{fact.value}</strong>
+      <section id="about" className="section-block about-section">
+        <div className="page-shell about-grid">
+          <div>
+            <p className="eyebrow">{copy.about.eyebrow}</p>
+            <h2>{copy.about.title}</h2>
+            <div className="profile-signature">
+              <span className="profile-monogram">
+                RA<span>_</span>
+              </span>
+              <div>
+                <strong>Rei Aliaj</strong>
+                <span>AI Engineer & Automation Developer</span>
               </div>
+            </div>
+          </div>
+          <div className="about-copy">
+            {copy.about.paragraphs.map((p) => (
+              <p key={p}>{p}</p>
             ))}
-            <a href="#contact" className="button-primary">
-              {copy.hero.contactCta}
-            </a>
+            <dl className="about-details">
+              {copy.about.details.map((detail) => (
+                <div key={detail.label}>
+                  <dt>{detail.label}</dt>
+                  <dd>{detail.value}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
         </div>
       </section>
-
-      <section id="contact" className="section-block page-shell contact-section">
+      <section
+        id="contact"
+        className="section-block page-shell contact-section"
+      >
         <div className="contact-copy">
           <p className="eyebrow">{copy.contact.eyebrow}</p>
           <h2>{copy.contact.title}</h2>
           <p>{copy.contact.intro}</p>
+          <p className="contact-note">{copy.contact.note}</p>
           <div className="contact-list">
             <a href={`mailto:${contactDetails.email}`}>
-              <MailIcon className="h-5 w-5" />
+              <MailIcon />
               <span>{contactDetails.email}</span>
-            </a>
-            <a href={contactDetails.whatsappHref} target="_blank" rel="noreferrer">
-              <WhatsAppIcon className="h-5 w-5" />
-              <span>{contactDetails.whatsapp}</span>
+              <span>↗</span>
             </a>
             <a href={contactDetails.linkedin} target="_blank" rel="noreferrer">
-              <LinkedInIcon className="h-5 w-5" />
+              <LinkedInIcon />
               <span>LinkedIn / Rei Aliaj</span>
+              <span>↗</span>
             </a>
-            <a href={contactDetails.mapsHref} target="_blank" rel="noreferrer">
-              <MapPinIcon className="h-5 w-5" />
-              <span>{contactDetails.address}</span>
+            <a
+              href={contactDetails.whatsappHref}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <WhatsAppIcon />
+              <span>{contactDetails.whatsapp}</span>
+              <span>↗</span>
             </a>
           </div>
         </div>
@@ -312,13 +281,20 @@ export function PortfolioPage({ locale }: PortfolioPageProps) {
           whatsappHref={contactDetails.whatsappHref}
         />
       </section>
-
       <footer className="site-footer page-shell">
         <div>
-          <strong>Rei Aliaj</strong>
+          <strong>
+            Rei Aliaj<span>_</span>
+          </strong>
           <span>{copy.footer.role}</span>
         </div>
-        <p>© 2026 Rei Aliaj · {copy.footer.copyright}</p>
+        <p>© {new Date().getFullYear()} Rei Aliaj</p>
+        <a
+          href="#top"
+          aria-label={locale === "de" ? "Zurück nach oben" : "Back to top"}
+        >
+          ↑
+        </a>
       </footer>
     </main>
   );
